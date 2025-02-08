@@ -78,43 +78,48 @@ printed_courses = set()  # Track printed course names to avoid duplicates
 #     driver.execute_script("arguments[0].click();", details)  # Click using JS
 #     time.sleep(2)  # Give some time to load details
 
+
+### OVERALL LOOP ###
 for i, element in enumerate(list_elements):
     try:
         course_name = element.text.strip()
 
-        #Skip empty courses
+        # Skip empty courses
         if not course_name or course_name in printed_courses:
             continue
-        
-        printed_courses.add(course_name)  # Track unique courses
-        print(f"COURSE:  {course_name}")
-        
 
-        # #Find only the faculty names inside THIS course's container
+        printed_courses.add(course_name)
+        print(f"COURSE: {course_name}")
+
+        # Get the overall section box of the course 
         class_container = element.find_element(By.XPATH, "./ancestor::div[contains(@class, 'tfp_accordion_row')]")
-        section_container = class_container.find_elements(By.CSS_SELECTOR, ".accorion-head.closed")
+        # Get the different sections
+        section_containers = class_container.find_elements(By.CLASS_NAME, "accorion-head")
 
-        print("Found section containers:", len(section_container))
-        # section_elements = parent_container.find_elements(By.XPATH, "//tr[contains(@class, 'accorion-head')]/td[1]")
+        # Print professor names for each section
+        for j, section in enumerate(section_containers):
+            try:
+                
+                # Get section name
+                section_name = "need to figure out"
+                
+                # Get professor/s
+                faculty_elements = section.find_elements(By.CLASS_NAME, "tfp-ins")
 
-        faculty_elements = section_container[1].find_element(By.CLASS_NAME, "tfp-ins")
+                # Extract unique faculty names
+                faculty_list = list(set([faculty.get_attribute("textContent").strip() for faculty in faculty_elements if faculty.get_attribute("textContent").strip()]))
 
-        # Extract unique faculty names
-        faculty_list = list(set([faculty.get_attribute("textContent").strip() for faculty in faculty_elements if faculty.get_attribute("textContent").strip()]))
-        
-        print(f"Professor(s): {', '.join(faculty_list) if faculty_list else 'N/A'}")
+                # Print section and faculty information
+                if faculty_list:
+                    print(f" --> Section: {section_name}: {', '.join(faculty_list)}")
 
-        details_links = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.CLASS_NAME, "status"))
-        )
-        # driver.execute_script("arguments[0].scrollIntoView();", details_links[i])
-        # driver.execute_script("arguments[0].click();", details_links[i])  # Click using JS
-        # time.sleep(2)  # Give some time to load details
+            except Exception as e:
+                print(f"Error processing section {j+1}: {e}")
 
     except Exception as e:
         print(f"Error processing course {i+1}: {e}")
 
 
 
-input("Press Enter to quit...")  # Keep browser open for debugging
+input("Press Enter to quit...")
 driver.quit()

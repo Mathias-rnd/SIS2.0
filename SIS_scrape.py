@@ -72,7 +72,6 @@ printed_courses = set()  # Track printed course names to avoid duplicates
 # details_links = WebDriverWait(driver, 10).until(
 #     EC.presence_of_all_elements_located((By.CLASS_NAME, "status"))
 # )
-
 # for details in details_links:
 #     driver.execute_script("arguments[0].scrollIntoView();", details)
 #     driver.execute_script("arguments[0].click();", details)  # Click using JS

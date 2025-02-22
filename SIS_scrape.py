@@ -47,6 +47,26 @@ WebDriverWait(driver, 10).until(
     EC.presence_of_element_located((By.CLASS_NAME, "accorion-head"))
 )
 
+# Click the Component dropdown
+
+dropdown = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.ID, "s2id_tfp-comp-js"))
+)
+dropdown.click()
+
+# Wait explicitly for the options container to appear (adjust the class if necessary)
+WebDriverWait(driver, 10).until(
+    EC.visibility_of_element_located((By.CLASS_NAME, "select2-result-selectable"))
+)
+
+comps_list = driver.find_elements(By.CLASS_NAME, "select2-result-selectable")
+for option in comps_list:
+    if "Lecture" in option.text:
+        option.click()
+        break
+else:
+    print("'Lecture' option was not found!")
+
 
 previous_count = 0
 max_attempts = 15  # To prevent infinite loops
@@ -68,15 +88,17 @@ while attempts < max_attempts:
 print("\nFound Courses:")
 printed_courses = set()  # Track printed course names to avoid duplicates
 
-# print("clicking on details")
-# details_links = WebDriverWait(driver, 10).until(
-#     EC.presence_of_all_elements_located((By.CLASS_NAME, "status"))
-# )
 
-# for details in details_links:
-#     driver.execute_script("arguments[0].scrollIntoView();", details)
-#     driver.execute_script("arguments[0].click();", details)  # Click using JS
-#     time.sleep(2)  # Give some time to load details
+
+print("clicking on details")
+details_links = WebDriverWait(driver, 10).until(
+    EC.presence_of_all_elements_located((By.CLASS_NAME, "status"))
+)
+
+for details in details_links:
+    driver.execute_script("arguments[0].scrollIntoView();", details)
+    driver.execute_script("arguments[0].click();", details)  # Click using JS
+    time.sleep(2)  # Give some time to load details
 
 
 ### OVERALL LOOP ###
@@ -87,7 +109,6 @@ for i, element in enumerate(list_elements):
         # Skip empty courses
         if not course_name or course_name in printed_courses:
             continue
-
         printed_courses.add(course_name)
         print(f"COURSE: {course_name}")
 
@@ -105,6 +126,12 @@ for i, element in enumerate(list_elements):
                 
                 # Get professor/s
                 faculty_elements = section.find_elements(By.CLASS_NAME, "tfp-ins")
+
+                #Get Credits
+
+                #Get Description
+
+                #Get 
 
                 # Extract unique faculty names
                 faculty_list = list(set([faculty.get_attribute("textContent").strip() for faculty in faculty_elements if faculty.get_attribute("textContent").strip()]))

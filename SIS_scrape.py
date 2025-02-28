@@ -99,6 +99,14 @@ for details in details_links:
     driver.execute_script("arguments[0].scrollIntoView();", details)
     driver.execute_script("arguments[0].click();", details)  # Click using JS
     time.sleep(2)  # Give some time to load details
+# print("clicking on details")
+# details_links = WebDriverWait(driver, 10).until(
+#     EC.presence_of_all_elements_located((By.CLASS_NAME, "status"))
+# )
+# for details in details_links:
+#     driver.execute_script("arguments[0].scrollIntoView();", details)
+#     driver.execute_script("arguments[0].click();", details)  # Click using JS
+#     time.sleep(2)  # Give some time to load details
 
 
 ### OVERALL LOOP ###
